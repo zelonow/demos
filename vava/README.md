@@ -30,7 +30,7 @@ NEXT_PUBLIC_SITE_URL=https://vavatransport.rw
 
 The local FleetX Enterprise demo exposes public inventory, booking request, assistant, and proof-upload endpoints at `/api/v1/fleet/public/:organizationId/...`. For the seeded demo, `NEXT_PUBLIC_ORG_ID=vava` resolves to the latest Vava supplier fleet organization. `ZELO_FLEETX_API_KEY` is only needed for protected or remote API deployments that require bearer auth.
 
-Without the FleetX backend URL and organization value, or if the backend is offline, the app falls back to local Vava mock data.
+Without the FleetX backend URL and organization value, the app falls back to local Vava mock data. When `BACKEND_BASE_URL` is configured, FleetX is treated as required; if it is offline or not seeded, `/api/inventory` returns a `502` instead of silently using mock vehicles. Set `FLEETX_ALLOW_MOCK_FALLBACK=true` only for an intentionally offline demo.
 
 ## Demo Pairing
 

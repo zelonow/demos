@@ -196,8 +196,12 @@ export async function getAttInventory(): Promise<InventoryResponse> {
     if (!response.ok) throw new Error(`FleetX inventory returned ${response.status}`);
     return normalizeFleetxInventory(await response.json());
   } catch (error) {
-    console.error("[fleetx-inventory] Falling back to mock inventory", error);
-    return MOCK_INVENTORY;
+    if (process.env.FLEETX_ALLOW_MOCK_FALLBACK === "true") {
+      console.error("[fleetx-inventory] Falling back to mock inventory", error);
+      return MOCK_INVENTORY;
+    }
+    console.error("[fleetx-inventory] FleetX inventory unavailable", error);
+    throw error;
   }
 }
 

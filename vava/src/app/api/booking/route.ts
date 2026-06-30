@@ -11,7 +11,7 @@ async function buildAccessResponse(req: NextRequest, body: any, booking: any) {
   const sessionId = booking.sessionId || booking.session?.id || `SES-${Date.now().toString(36).toUpperCase()}`;
   const status = booking.status || "pending_operator_review";
   const lang = body.lang || "en";
-  const vehicle = await getAttVehicle(body.vehicleId);
+  const vehicle = await getAttVehicle(body.vehicleId).catch(() => null);
   const vehicleLabel = vehicle ? `${vehicle.make} ${vehicle.model}` : body.vehicleId;
 
   const payload: RequestAccessPayload = {
