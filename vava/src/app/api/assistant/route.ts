@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SITE } from "@/config/site";
-import { fleetxApiHeaders, hasLiveFleetxConfig } from "@/lib/fleetx-inventory";
-import { MOCK_INVENTORY } from "@/lib/mock-data";
+import { fleetxApiHeaders, getAttInventory, hasLiveFleetxConfig } from "@/lib/fleetx-inventory";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (hasLiveFleetxConfig()) {
-      const url = `${SITE.backendBase}/api/v1/fleet/public/${SITE.organizationId}/assistant/query`;
+      const url = `${SITE.backendBase.replace(/\/+$/, "")}/api/v1/fleet/public/${SITE.organizationId}/assistant/query`;
       const res = await fetch(url, {
         method: "POST",
         headers: fleetxApiHeaders({
@@ -31,7 +30,8 @@ export async function POST(req: NextRequest) {
     }
 
     const lowered = message.toLowerCase();
-    const suggestedVehicles = MOCK_INVENTORY.vehicles
+    const inventory = await getAttInventory();
+    const suggestedVehicles = inventory.vehicles
       .filter((vehicle) => {
         const haystack = [
           vehicle.make,
@@ -43,12 +43,12 @@ export async function POST(req: NextRequest) {
         return lowered.split(/\s+/).some((word) => word.length > 2 && haystack.includes(word));
       })
       .slice(0, 3);
-    const fallback = suggestedVehicles.length > 0 ? suggestedVehicles : MOCK_INVENTORY.vehicles.slice(0, 3);
+    const fallback = suggestedVehicles.length > 0 ? suggestedVehicles : inventory.vehicles.slice(0, 3);
     const lead = fallback[0];
 
     return NextResponse.json({
       answer: `${lead.make} ${lead.model} is available from ${lead.dailyRateRwf.toLocaleString()} RWF per day. I can prepare the booking path, and the final request is submitted through the booking form.`,
-      organization: MOCK_INVENTORY.organization,
+      organization: inventory.organization,
       suggestedVehicles: fallback,
       nextAction: {
         type: "prepare_booking_request",

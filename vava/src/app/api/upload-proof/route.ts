@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // If real backend is configured, forward to it
     if (hasLiveFleetxConfig()) {
-      const url = `${SITE.backendBase}/api/v1/fleet/public/${SITE.organizationId}/booking-proof-upload`;
+      const url = `${SITE.backendBase.replace(/\/+$/, "")}/api/v1/fleet/public/${SITE.organizationId}/booking-proof-upload`;
       const upstream = new FormData();
       upstream.append("file", file);
 

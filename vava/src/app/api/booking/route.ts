@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     // If real backend is configured, forward to it
     if (hasLiveFleetxConfig()) {
-      const url = `${SITE.backendBase}/api/v1/fleet/public/${SITE.organizationId}/booking-requests`;
+      const url = `${SITE.backendBase.replace(/\/+$/, "")}/api/v1/fleet/public/${SITE.organizationId}/booking-requests`;
       const res = await fetch(url, {
         method: "POST",
         headers: fleetxApiHeaders({ "Content-Type": "application/json" }),
@@ -70,7 +70,11 @@ export async function POST(req: NextRequest) {
       }
 
       const booking = await res.json();
-      return NextResponse.json(await buildAccessResponse(req, body, booking));
+      const normalizedBooking = {
+        ...booking,
+        status: booking.status === "pending_payment" ? "pending_operator_review" : booking.status,
+      };
+      return NextResponse.json(await buildAccessResponse(req, body, normalizedBooking));
     }
 
     // Mock booking response

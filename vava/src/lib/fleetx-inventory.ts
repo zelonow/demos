@@ -172,7 +172,7 @@ export function normalizeFleetxVehicle(vehicle: FleetxVehicle): Vehicle {
 }
 
 export function hasLiveFleetxConfig() {
-  return Boolean(SITE.backendBase && SITE.organizationId !== "mock" && process.env.ZELO_FLEETX_API_KEY);
+  return Boolean(SITE.backendBase && SITE.organizationId !== "mock");
 }
 
 export function fleetxApiHeaders(extra: Record<string, string> = {}): Record<string, string> {

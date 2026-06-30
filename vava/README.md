@@ -24,12 +24,13 @@ Set these variables in `.env.local` when connecting to a real FleetX tenant:
 ```env
 NEXT_PUBLIC_ORG_ID=vava
 BACKEND_BASE_URL=http://localhost:3012
-ZELO_FLEETX_API_KEY=zelo_demo_...
 NEXT_PUBLIC_ADMIN_URL=http://localhost:3012
 NEXT_PUBLIC_SITE_URL=https://vavatransport.rw
 ```
 
-Without those values, the app runs from local Vava mock data.
+The local FleetX Enterprise demo exposes public inventory, booking request, assistant, and proof-upload endpoints at `/api/v1/fleet/public/:organizationId/...`. For the seeded demo, `NEXT_PUBLIC_ORG_ID=vava` resolves to the latest Vava supplier fleet organization. `ZELO_FLEETX_API_KEY` is only needed for protected or remote API deployments that require bearer auth.
+
+Without the FleetX backend URL and organization value, or if the backend is offline, the app falls back to local Vava mock data.
 
 ## Demo Pairing
 
